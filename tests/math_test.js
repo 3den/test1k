@@ -9,7 +9,7 @@
  **/
 
 // Allow the tests to run in node
-if (module) test = require("../test.js");
+if (typeof module !== "undefined") var test = require("../test.js");
 
 // You can use the describe to group your assertions
 test.describe("Math", function(){
@@ -22,14 +22,15 @@ test.describe("Math", function(){
     test.assert("Math.sqrt(%1) === %2", n, expectation)
   }
 
-  // Math.pow
+  // #pow
   assertPow(2, 2, 4);
   assertPow(2, 1, 2);
 
   // you can customize your assertion anyway you like
   function assertPow(n1, n2, expectation) {
     var result = Math.pow(n1, n2)
-      , msg = test.interpolate("#pow(%1, %2): %3 === %4", arguments);
+      , msg = test.interpolate("#pow(%1, %2): %3 === %4",
+        [0, n1, n2, expectation, result]);
 
     test.assert(result === expectation, msg);
   }

@@ -33,4 +33,4 @@ var test = {
   },
 }
 
-if (module) module.exports = test;
+if (typeof module !== "undefined") module.exports = test;
