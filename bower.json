@@ -1,0 +1,21 @@
+{
+  "name": "test1k",
+  "version": "0.0.0",
+  "authors": [
+    "Marcelo Eden <edendroid@gmail.com>"
+  ],
+  "description": "The smallest test framework evermade for node and the browser.",
+  "main": "test.js",
+  "keywords": [
+    "test",
+    "tdd",
+    "bdd"
+  ],
+  "license": "MIT",
+  "homepage": "3den,org",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+  ]
+}
