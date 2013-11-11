@@ -1,36 +1,53 @@
 "use strict";
-var test = {
-  describe: function (name, fn) {
-    this.log(name);
-    this.indent(+1);
-    fn.call(this, this.assert);
-    this.indent(-1);
-  },
+var Logger = (function (){
+  function Logger(){ }
 
-  log: function (text) {
-    console.log(this.indent() + text.toString());
-  },
-
-  assert: function (ok, msg) {
-    if(typeof ok == "string") {
-      var code = this.interpolate(ok, arguments);
-      return this.assert(eval(code), code);
-    }
-
-    console.assert(ok, msg) || this.log(msg)
-  },
-
-  interpolate: function(string, args) {
-    return string.replace(/\%(\d)/g, function(match, key){
-      return args[key];
-    });
-  },
-
-  indent: function(n){
+  Logger.prototype.indent = function(n){
     var i = this.indentation || 0;
     if(!n) return i > 0 ? new Array(i + 1).join("  ") : "";
     this.indentation = i ? i + n : n;
-  },
-}
+  };
+
+  Logger.prototype.log = function (text) {
+    console.log(this.indent() + text.toString());
+  };
+
+  return Logger;
+})();
+
+var test = (function(){
+  var logger = new Logger();
+
+  function log(text) { logger.log(text) }
+  function indent(n) { logger.indent(n) }
+
+  function interpolationTest(ok, args) {
+    ok = this.interpolate(ok, args);
+    this.assert(eval(ok), ok);
+  }
+
+  return {
+    describe: function (name, fn) {
+      log(name);
+      indent(+1);
+      fn.call(this, this.assert);
+      indent(-1);
+    },
+
+    assert: function (ok, msg) {
+      if(typeof ok == "string") {
+        return interpolationTest.call(this, ok, msg);
+      }
+
+      console.assert(ok, msg) || log(msg)
+    },
+
+    interpolate: function(string, args) {
+      return string.replace(/\%(\w+)/g, function(match, key){
+        return args[key];
+      });
+    },
+  };
+})();
 
 if (typeof module !== "undefined") module.exports = test;
