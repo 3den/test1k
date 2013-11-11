@@ -1,4 +1,10 @@
+/**
+ * Test1k 0.0.1 | https://github.com/3den/test1k
+ * (c) 2013 Marcelo Eden
+ * @license MIT
+ **/
 "use strict";
+
 var Logger = (function (){
   function Logger(){ }
 
