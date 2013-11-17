@@ -7,13 +7,13 @@
   "use strict";
 
   // The Logger Classs
-  global.Logger = (function (){
-    function Logger(i){
+  global.Logger = (function () {
+    function Logger(i) {
       this.i = i || 0;
     }
 
     Logger.prototype = {
-      indent: function(n){
+      indent: function(n) {
         var i = this.i;
 
         if (n) {
@@ -27,7 +27,7 @@
         console.log(this.indent() + text.toString());
       },
 
-      assert: function (ok, msg){
+      assert: function (ok, msg) {
         console.assert(ok, msg) || this.log(msg);
       }
     };
@@ -36,18 +36,18 @@
   })();
 
   // The test Suite Class
-  global.Suite = (function (){
-    function Suite(){
+  global.Suite = (function () {
+    function Suite() {
       this.logger = new Logger();
       this.assertions = 0;
       this.successes = 0;
     }
 
     Suite.prototype = {
-      log: function (text){ this.logger.log(text) },
-      indent: function (n){ this.logger.indent(n) },
+      log: function (text) { this.logger.log(text) },
+      indent: function (n) { this.logger.indent(n) },
 
-      describe: function (name, fn){
+      describe: function (name, fn) {
         this.log(name);
         this.indent(+1);
         fn.call(this);
@@ -55,8 +55,8 @@
         this.finish();
       },
 
-      assert: function (ok, msg){
-        if (typeof ok == "string"){
+      assert: function (ok, msg) {
+        if (typeof ok == "string") {
           ok = this.interpolate(ok, msg);
           return this.assert(eval(ok), ok)
         }
@@ -66,13 +66,13 @@
         ok && this.successes++;
       },
 
-      interpolate: function (string, args){
-        return string.replace(/\%(\w+)/g, function (match, key){
+      interpolate: function (string, args) {
+        return string.replace(/\%(\w+)/g, function (match, key) {
           return args[key];
         });
       },
 
-      finish: function (){
+      finish: function () {
         if (this.indent() > 0) return;
 
         var errors = this.assertions - this.successes;
