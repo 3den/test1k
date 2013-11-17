@@ -20,6 +20,7 @@ describe("Math", function(){
   assertSqrt(4, 2);
   assertSqrt(9, 3);
   assertSqrt(16, 4);
+  assertSqrt(12, 1);
 
   // The assertion function can interpolate a string with an array
   function assertSqrt(n, expectation) {
