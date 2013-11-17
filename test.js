@@ -3,8 +3,9 @@
  * (c) 2013 Marcelo Eden
  * @license MIT
  **/
-"use strict";
 (function (global) {
+  "use strict";
+
   global.Logger = (function (){
     function Logger(i){
       this.i = i || 0;
@@ -24,7 +25,7 @@
     return Logger;
   })();
 
-  global.test = (function(){
+  var test = (function(){
     var logger = new Logger();
 
     function log(text) { logger.log(text) }
@@ -58,4 +59,7 @@
       }
     };
   })();
+
+  // Bind the global vars
+  for (var prop in test) { global[prop] = test[prop].bind(test); }
 })(typeof global !== "undefined" ? global : window);

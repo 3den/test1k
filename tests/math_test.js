@@ -12,14 +12,15 @@
 if (typeof module !== "undefined") require("../test.js");
 
 // You can use the describe to group your assertions
-test.describe("Math", function(){
+describe("Math", function(){
   // #sqrt
   assertSqrt(4, 2);
   assertSqrt(9, 3);
+  assertSqrt(16, 4);
 
   // The assertion function can interpolate a string with an array
   function assertSqrt(n, expectation) {
-    test.assert("Math.sqrt(%0) === %1", [n, expectation]);
+    assert("Math.sqrt(%0) === %1", [n, expectation]);
   }
 
   // #flor
@@ -28,21 +29,22 @@ test.describe("Math", function(){
 
   // The assertion function can interpolate a string with an object
   function assertFloor(n, expectation) {
-    test.assert("Math.floor(%n) === %result", {
+    assert("Math.floor(%n) === %result", {
       n: n, result: expectation
     });
   }
 
   // #pow
   assertPow(2, 2, 4);
+  assertPow(4, 2, 16);
   assertPow(2, 1, 2);
 
   // you can customize your assertion anyway you like
   function assertPow(n1, n2, expectation) {
     var result = Math.pow(n1, n2)
-      , msg = test.interpolate("#pow(%0, %1): %2 === %3",
+      , msg = interpolate("#pow(%0, %1): %2 === %3",
         [n1, n2, expectation, result]);
 
-    test.assert(result === expectation, msg);
+    assert(result === expectation, msg);
   }
 });
