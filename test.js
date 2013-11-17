@@ -6,60 +6,89 @@
 (function (global) {
   "use strict";
 
+  // The Logger Classs
   global.Logger = (function (){
     function Logger(i){
       this.i = i || 0;
     }
 
-    Logger.prototype.indent = function(n){
-      var i = this.i;
+    Logger.prototype = {
+      indent: function(n){
+        var i = this.i;
 
-      if(!n) return i > 0 ? new Array(i + 1).join("  ") : "";
-      this.i = i ? i + n : n;
-    };
+        if (n) {
+          this.i = i ? i + n : n;
+        } else {
+          return i > 0 ? new Array(i + 1).join("  ") : "";
+        }
+      },
 
-    Logger.prototype.log = function (text) {
-      console.log(this.indent() + text.toString());
+      log: function (text) {
+        console.log(this.indent() + text.toString());
+      },
+
+      assert: function (ok, msg){
+        console.assert(ok, msg) || this.log(msg);
+      }
     };
 
     return Logger;
   })();
 
-  var test = (function(){
-    var logger = new Logger();
-
-    function log(text) { logger.log(text) }
-    function indent(n) { logger.indent(n) }
-
-    function interpolationTest(ok, args) {
-      ok = this.interpolate(ok, args);
-      this.assert(eval(ok), ok);
+  // The test Suite Class
+  global.Suite = (function (){
+    function Suite(){
+      this.logger = new Logger();
+      this.assertions = 0;
+      this.successes = 0;
     }
 
-    return {
-      describe: function (name, fn) {
-        log(name);
-        indent(+1);
+    Suite.prototype = {
+      log: function (text){ this.logger.log(text) },
+      indent: function (n){ this.logger.indent(n) },
+
+      describe: function (name, fn){
+        this.log(name);
+        this.indent(+1);
         fn.call(this);
-        indent(-1);
+        this.indent(-1);
+        this.finish();
       },
 
-      assert: function (ok, msg) {
-        if(typeof ok == "string") {
-          return interpolationTest.call(this, ok, msg);
+      assert: function (ok, msg){
+        if (typeof ok == "string"){
+          ok = this.interpolate(ok, msg);
+          return this.assert(eval(ok), ok)
         }
 
-        console.assert(ok, msg) || log(msg)
+        this.assertions++;
+        this.logger.assert(ok, msg);
+        ok && this.successes++;
       },
 
-      interpolate: function(string, args) {
-        return string.replace(/\%(\w+)/g, function(match, key){
+      interpolate: function (string, args){
+        return string.replace(/\%(\w+)/g, function (match, key){
           return args[key];
         });
+      },
+
+      finish: function (){
+        if (this.indent() > 0) return;
+
+        var errors = this.assertions - this.successes;
+        this.log(this.interpolate("\n%0 assertions, %1 failures", [
+          this.assertions, errors
+        ]));
+
+        if (errors && typeof process !== "undefined") process.exit(1)
       }
     };
+
+    return Suite;
   })();
 
-  // Bind the global vars
-  for (var prop in test) { global[prop] = test[prop].bind(test); }
+  // Bind all the global var
+  var prop, test = new Suite();
+  for (prop in Suite.prototype) { global[prop] = test[prop].bind(test); }
+
 })(typeof global !== "undefined" ? global : window);

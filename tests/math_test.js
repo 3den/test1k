@@ -1,8 +1,11 @@
 /**
  * Tests for the javascript `Math`
  *
+ * Those tests will use a single level of `describe`.
  * We choose `Math` because is a native javascript object
- * that works fine and has a simple API. Those tests will use a single level of describe
+ * that works fine and has a simple API.
+ *
+ * Here you can see all diferent styles of custom `assetions` the you can use.
  *
  * If you want to learn TDD, the 1k style, just read this file.
  * I am sure that you will get it ;)
